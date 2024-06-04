@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word of the Day</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            margin: 0;
+            transition: background-color 0.5s ease;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        canvas {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <img id="dailyImage" src="" alt="Word of the Day">
+    <canvas id="imageCanvas"></canvas>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const today = new Date();
+            const month = (today.getMonth() + 1).toString().padStart(2, '0'); // Get month and pad with leading zero
+            const day = today.getDate().toString().padStart(2, '0'); // Get day and pad with leading zero
+            const dateStr = `${month}${day}`;
+            const imagePath = `images/${dateStr}.png`;
+
+            const imgElement = document.getElementById('dailyImage');
+            const canvas = document.getElementById('imageCanvas');
+            const context = canvas.getContext('2d');
+
+            imgElement.src = imagePath;
+
+            imgElement.onload = () => {
+                canvas.width = imgElement.width;
+                canvas.height = imgElement.height;
+                context.drawImage(imgElement, 0, 0, imgElement.width, imgElement.height);
+
+                const imageData = context.getImageData(0, 0, 1, 1);
+                const data = imageData.data;
+                const r = data[0];
+                const g = data[1];
+                const b = data[2];
+
+                document.body.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
+            };
+
+            imgElement.onerror = () => {
+                imgElement.alt = 'Image not available';
+            };
+        });
+    </script>
+</body>
+
+</html>
